@@ -5,7 +5,7 @@ param location string
 param tags object = {}
 
 resource keyvault 'Microsoft.KeyVault/vaults@2024-11-01' = {
-  name: 'kv-accesspolicy'
+  name: 'kv-accpol-g79v-aue'
   location: location
   properties: {
     sku: {
