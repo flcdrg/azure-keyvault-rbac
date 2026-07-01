@@ -14,12 +14,6 @@ param projectName string = 'stack'
 @description('Organization prefix for resource naming')
 param orgPrefix string = ''
 
-@description('Storage account SKU')
-param storageSkuName string = 'Standard_LRS'
-
-@description('Storage account access tier')
-param storageAccessTier string = 'Hot'
-
 // Load variables module
 module variables 'variables.bicep' = {
   name: 'variablesModule'
@@ -31,14 +25,10 @@ module variables 'variables.bicep' = {
   }
 }
 
-// Deploy storage account
-module storageModule 'modules/storage.bicep' = {
-  name: 'storageModule'
+module keyvaultModule 'modules/keyvault.bicep' = {
+  name: 'keyvaultModule'
   params: {
-    storageAccountName: variables.outputs.storageAccountName
     location: location
-    skuName: storageSkuName
-    accessTier: storageAccessTier
     tags: variables.outputs.commonTags
   }
 }
@@ -47,9 +37,6 @@ module storageModule 'modules/storage.bicep' = {
 module outputsModule 'outputs.bicep' = {
   name: 'outputsModule'
   params: {
-    storageAccountId: storageModule.outputs.storageAccountId
-    storageAccountName: storageModule.outputs.storageAccountName
-    primaryBlobEndpoint: storageModule.outputs.primaryBlobEndpoint
     resourceGroupName: resourceGroup().name
     environment: environment
   }
@@ -57,7 +44,4 @@ module outputsModule 'outputs.bicep' = {
 
 // Root outputs
 output deploymentInfo object = outputsModule.outputs.deploymentInfo
-output storageAccountName string = outputsModule.outputs.storageAccountName
-output storageAccountId string = outputsModule.outputs.storageAccountId
-output primaryBlobEndpoint string = outputsModule.outputs.primaryBlobEndpoint
 output environment string = outputsModule.outputs.environment
