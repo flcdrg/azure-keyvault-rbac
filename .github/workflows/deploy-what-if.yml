@@ -1,0 +1,135 @@
+name: Deployment What-If
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "infra/**"
+      - ".github/workflows/deploy-what-if.yml"
+
+env:
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+  ENVIRONMENT: "dev"
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate-bicep:
+    name: Validate Bicep Template
+    runs-on: ubuntu-latest
+    outputs:
+      bicep-validation: ${{ steps.validate.outcome }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Validate Bicep syntax
+        id: validate
+        run: |
+          az bicep build --file infra/main.bicep --outdir /tmp
+          echo "✓ Bicep syntax is valid"
+
+      - name: Check parameter file
+        run: |
+          if [ -f "infra/main.bicepparam" ]; then
+            echo "✓ Parameter file found: infra/main.bicepparam"
+          else
+            echo "✗ Parameter file not found: infra/main.bicepparam"
+            exit 1
+          fi
+
+  what-if:
+    name: Deployment What-If Preview
+    needs: [ validate-bicep ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Generate deployment name with timestamp
+        id: deployment-name
+        run: |
+          echo "name=whatif-${{ env.ENVIRONMENT }}-$(date +%s)" >> "$GITHUB_OUTPUT"
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v3
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          enable-AzPSSession: false
+
+      - name: Run deployment what-if
+        uses: Azure/bicep-deploy@v2
+        with:
+          name: ${{ steps.deployment-name.outputs.name }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          resource-group-name: ${{ env.RESOURCE_GROUP_NAME }}
+          scope: resourceGroup
+          template-file: ./infra/main.bicep
+          parameters-file: ./infra/main.bicepparam
+          type: deployment
+          operation: whatIf
+
+      - name: Format what-if output for PR comment
+        id: format-output
+        run: |
+          {
+            echo 'comment-body<<EOF'
+            echo "## 🔍 Deployment What-If Preview"
+            echo ""
+            echo "**Environment:** \`${{ env.ENVIRONMENT }}\`"
+            echo "**Resource Group:** \`${{ env.RESOURCE_GROUP_NAME }}\`"
+            echo "**Deployment Name:** \`${{ steps.deployment-name.outputs.name }}\`"
+            echo ""
+            echo "### Validation Status:"
+            echo "✓ Template validation completed successfully"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+          {
+            echo "## 🔍 Deployment What-If Preview"
+            echo ""
+            echo "**Environment:** \`${{ env.ENVIRONMENT }}\`"
+            echo "**Resource Group:** \`${{ env.RESOURCE_GROUP_NAME }}\`"
+            echo "**Deployment Name:** \`${{ steps.deployment-name.outputs.name }}\`"
+            echo ""
+            echo "### Validation Status:"
+            echo "✓ Template validation completed successfully"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment PR with validation results
+        if: always()
+        uses: actions/github-script@v9
+        env:
+          PR_COMMENT_BODY: ${{ steps.format-output.outputs.comment-body }}
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: process.env.PR_COMMENT_BODY
+            });
+
+  summary:
+    name: Summary
+    needs: [ validate-bicep, what-if ]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check validation status
+        run: |
+          if [ "${{ needs.validate-bicep.result }}" != "success" ] || [ "${{ needs.what-if.result }}" != "success" ]; then
+            echo "❌ PR validation failed"
+            exit 1
+          else
+            echo "✓ PR validation successful"
+          fi

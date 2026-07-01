@@ -1,0 +1,43 @@
+name: Destroy
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: "0 0 * * *" # Every night at midnight
+
+env:
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+  DEPLOYMENT_STACK_NAME: "stack-dev"
+
+permissions:
+  id-token: write
+
+jobs:
+  destroy:
+    name: Destroy Deployment Stack
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login (OIDC)
+        uses: azure/login@v3
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          enable-AzPSSession: false
+
+      - name: Create or update deployment stack
+        id: deploy
+        uses: Azure/bicep-deploy@v2
+        with:
+          name: ${{ env.DEPLOYMENT_STACK_NAME }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          resource-group-name: ${{ env.RESOURCE_GROUP_NAME }}
+          type: deploymentStack
+          scope: resourceGroup
+          operation: delete
+          action-on-unmanage-resources: delete
+          deny-settings-mode: none
