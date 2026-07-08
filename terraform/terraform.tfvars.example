@@ -1,0 +1,9 @@
+resource_group_name = "rg-kvdemo-dev"
+environment         = "dev"
+project_name        = "kvdemo"
+org_prefix          = ""
+
+# Optional: extra Entra object IDs to grant full data-plane permissions.
+additional_access_policy_object_ids = [
+  "00000000-0000-0000-0000-000000000000",
+]
