@@ -1,0 +1,9 @@
+.slidev-layout h1 + p,
+.slidev-layout h2 + p,
+.slidev-layout h3 + p,
+.slidev-layout h4 + p,
+.slidev-layout h5 + p,
+.slidev-layout h6 + p {
+  opacity: 1 !important;
+  color: inherit !important;
+}
