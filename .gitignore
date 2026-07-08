@@ -428,3 +428,6 @@ FodyWeavers.xsd
 *.msm
 *.msp
 .env.setup.local
+
+# Terraform
+.terraform

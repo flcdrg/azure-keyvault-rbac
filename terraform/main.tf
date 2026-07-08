@@ -12,7 +12,7 @@ resource "random_string" "suffix" {
 
 locals {
   base_prefix      = join("-", compact([var.org_prefix, var.project_name, var.environment]))
-  sanitized_prefix = regexreplace(lower(local.base_prefix), "[^a-z0-9-]", "")
+  sanitized_prefix = join("", regexall("[a-z0-9-]", lower(local.base_prefix)))
   key_vault_name   = substr(join("-", compact([var.key_vault_name_prefix, local.sanitized_prefix, random_string.suffix.result])), 0, 24)
 
   full_secret_permissions = [
