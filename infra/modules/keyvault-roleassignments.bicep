@@ -25,7 +25,7 @@ resource deployerSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssig
 	properties: {
 		principalId: deployerObjectId
 		roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionIds.keyVaultSecretsOfficer)
-		principalType: 'User'
+		principalType: 'ServicePrincipal'
 	}
 }
 
@@ -35,7 +35,7 @@ resource deployerCryptoOfficerRoleAssignment 'Microsoft.Authorization/roleAssign
 	properties: {
 		principalId: deployerObjectId
 		roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionIds.keyVaultCryptoOfficer)
-		principalType: 'User'
+		principalType: 'ServicePrincipal'
 	}
 }
 
@@ -45,7 +45,7 @@ resource deployerCertificatesOfficerRoleAssignment 'Microsoft.Authorization/role
 	properties: {
 		principalId: deployerObjectId
 		roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionIds.keyVaultCertificatesOfficer)
-		principalType: 'User'
+		principalType: 'ServicePrincipal'
 	}
 }
 
@@ -55,7 +55,7 @@ resource additionalPrincipalAdministratorRoleAssignment 'Microsoft.Authorization
 	properties: {
 		principalId: additionalPrincipalObjectId
 		roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionIds.keyVaultAdministrator)
-		principalType: 'ServicePrincipal'
+		principalType: 'User'
 	}
 }
 
