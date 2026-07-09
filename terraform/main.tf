@@ -98,6 +98,7 @@ resource "azurerm_key_vault" "this" {
     environment = var.environment
     projectName = var.project_name
     deployedBy  = "Terraform"
+    type       = "Terraform"
   }
 }
 
@@ -106,7 +107,7 @@ resource "azurerm_key_vault_access_policy" "deployer" {
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = data.azurerm_client_config.current.object_id
 
-  secret_permissions = ["Set"]
+  secret_permissions = ["Get", "Set"]
   key_permissions    = ["Create"]
   certificate_permissions = [
     "ManageContacts",
@@ -124,6 +125,14 @@ resource "azurerm_key_vault_access_policy" "additional" {
   key_permissions         = local.full_key_permissions
   certificate_permissions = local.full_certificate_permissions
   storage_permissions     = local.full_storage_permissions
+}
+
+resource "azurerm_key_vault_access_policy" "msa_principal" {
+  key_vault_id = azurerm_key_vault.this.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = "9f9b3ec2-42af-456e-be88-d1b22d86e96b"
+
+  secret_permissions = ["Get"]
 }
 
 resource "azurerm_role_assignment" "deployer_secrets_officer" {
@@ -150,4 +159,16 @@ resource "azurerm_role_assignment" "additional_administrator" {
   scope                = azurerm_key_vault.this.id
   role_definition_name = "Key Vault Administrator"
   principal_id         = each.value
+}
+
+resource "azurerm_role_assignment" "msa_principal_secrets_user" {
+  scope                = azurerm_key_vault.this.id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = "9f9b3ec2-42af-456e-be88-d1b22d86e96b"
+}
+
+resource "azurerm_key_vault_secret" "shoosh" {
+  name         = "shoosh"
+  value        = "terraform"
+  key_vault_id = azurerm_key_vault.this.id
 }

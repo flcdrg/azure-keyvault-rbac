@@ -24,6 +24,7 @@ resource keyvault 'Microsoft.KeyVault/vaults@2024-11-01' = {
             'Create'
           ]
           secrets: [
+            'Get'
             'Set'
           ]
           storage: []
@@ -48,10 +49,30 @@ resource keyvault 'Microsoft.KeyVault/vaults@2024-11-01' = {
         }
         tenantId: tenant().tenantId
       }
+      // MSA principal access policy equivalent.
+      {objectId: '9f9b3ec2-42af-456e-be88-d1b22d86e96b'
+        permissions: {
+          certificates: []
+          keys: []
+          secrets: [
+            'Get'
+          ]
+          storage: []
+        }
+        tenantId: tenant().tenantId
+      }
     ]
     enableSoftDelete: false
   }
   tags: tags
+}
+
+resource bicepSecret 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = {
+  parent: keyvault
+  name: 'shoosh'
+  properties: {
+    value: 'bicep'
+  }
 }
 
 module keyvaultRoleAssignments 'keyvault-roleassignments.bicep' = {

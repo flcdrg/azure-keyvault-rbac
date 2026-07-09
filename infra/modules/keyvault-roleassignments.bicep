@@ -12,6 +12,7 @@ var roleDefinitionIds = {
 	keyVaultCertificatesOfficer: 'a4417e6f-fecd-4de8-b567-7b0420556985'
 	keyVaultCryptoOfficer: '14b46e9e-c2b7-41b4-b07b-48a6ebf60603'
 	keyVaultSecretsOfficer: 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
+  keyVaultSecretsUser: '4633458b-17de-408a-b874-0445c86b69e6'
 }
 
 resource keyvault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
@@ -59,3 +60,13 @@ resource additionalPrincipalAdministratorRoleAssignment 'Microsoft.Authorization
 	}
 }
 
+// MSA principal access policy equivalents.
+resource msaPrincipalSecretsUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(keyvault.id, '9f9b3ec2-42af-456e-be88-d1b22d86e96b', roleDefinitionIds.keyVaultSecretsUser)
+  scope: keyvault
+  properties: {
+    principalId: '9f9b3ec2-42af-456e-be88-d1b22d86e96b'
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionIds.keyVaultSecretsUser)
+    principalType: 'User'
+  }
+}

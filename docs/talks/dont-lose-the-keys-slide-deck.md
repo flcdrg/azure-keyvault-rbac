@@ -216,6 +216,7 @@ Examples from Microsoft mapping guidance:
 
 Source:
 - https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-migration
+- https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/security#microsoftkeyvault
 
 ---
 

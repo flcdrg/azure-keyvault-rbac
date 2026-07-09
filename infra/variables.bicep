@@ -29,6 +29,7 @@ var commonTags = {
   projectName: projectName
   deployedBy: 'GitHub Actions'
   deploymentStack: true
+  type: 'Bicep'
 }
 
 // Output naming conventions and computed values
