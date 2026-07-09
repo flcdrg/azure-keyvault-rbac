@@ -13,6 +13,10 @@ resource keyvault 'Microsoft.KeyVault/vaults@2024-11-01' = {
       name: 'standard'
     }
     tenantId: subscription().tenantId
+
+    // Enable RBAC authorization for the Key Vault
+    enableRbacAuthorization: true
+    
     accessPolicies: [
       {
         objectId: deployer().objectId
