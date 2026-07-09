@@ -91,7 +91,7 @@ resource "azurerm_key_vault" "this" {
   sku_name                      = var.key_vault_sku_name
 
   // Enable RBAC authorization for the Key Vault
-  rbac_authorization_enabled    = true
+  rbac_authorization_enabled    = false
 
   soft_delete_retention_days    = 7
   purge_protection_enabled      = false
