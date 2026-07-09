@@ -12,11 +12,11 @@ var bicepVaultUrl = Environment.GetEnvironmentVariable("BICEP_KEY_VAULT_URL")
 var terraformVaultUrl = Environment.GetEnvironmentVariable("TERRAFORM_KEY_VAULT_URL") 
     ?? "https://kv-kvdemo-dev-lh0m.vault.azure.net/";
 
-var credential = new DefaultAzureCredential();
+var credential = new AzureCliCredential();
 var bicepClient = new SecretClient(new Uri(bicepVaultUrl), credential);
 var terraformClient = new SecretClient(new Uri(terraformVaultUrl), credential);
 
-Console.WriteLine($"Reading secret '{SecretName}' from both vaults every 5 seconds. Press Ctrl+C to stop.");
+Console.WriteLine($"Reading secret '{SecretName}' from both vaults every 1 second. Press Ctrl+C to stop.");
 Console.WriteLine($"Bicep Vault: {bicepVaultUrl}");
 Console.WriteLine($"Terraform Vault: {terraformVaultUrl}");
 
@@ -37,7 +37,7 @@ while (!cts.Token.IsCancellationRequested)
 
 	try
 	{
-		await Task.Delay(TimeSpan.FromSeconds(5), cts.Token);
+		await Task.Delay(TimeSpan.FromSeconds(1), cts.Token);
 	}
 	catch (OperationCanceledException)
 	{
