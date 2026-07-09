@@ -311,28 +311,16 @@ Source:
 
 ---
 
-# Infrastructure as Code: Bicep pattern
+# Infrastructure as Code: Bicep step 1
 
-Example intent: create/update vault with RBAC model enabled and managed role
-assignments.
+Create RBAC role assignments first while vault is still on access policies.
 
-```bicep
-param location string = resourceGroup().location
+```bicep {*}{maxHeight:'300px'}
 param keyVaultName string
-param tenantId string
 param principalId string
 
-resource kv 'Microsoft.KeyVault/vaults@2023-07-01' = {
+resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   name: keyVaultName
-  location: location
-  properties: {
-    tenantId: tenantId
-    enableRbacAuthorization: true
-    sku: {
-      family: 'A'
-      name: 'standard'
-    }
-  }
 }
 
 resource kvSecretsUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
@@ -354,24 +342,74 @@ Sources:
 
 ---
 
-# Infrastructure as Code: Terraform pattern
+# Infrastructure as Code: Bicep step 2
 
-Example intent: set vault to RBAC and manage role assignments declaratively.
+After assignments are in place, switch the vault to RBAC permission model.
 
-```hcl
+```bicep {*}{maxHeight:'300px'}
+param location string = resourceGroup().location
+param keyVaultName string
+param tenantId string
+
+resource kv 'Microsoft.KeyVault/vaults@2023-07-01' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    tenantId: tenantId
+    enableRbacAuthorization: true
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+  }
+}
+```
+
+Sources:
+- https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-migration
+- https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide
+
+---
+
+# Infrastructure as Code: Terraform step 1
+
+Create role assignments first at Key Vault scope.
+
+```hcl {*}{maxHeight:'300px'}
 resource "azurerm_key_vault" "kv" {
-  name                        = var.key_vault_name
-  location                    = var.location
-  resource_group_name         = var.resource_group_name
-  tenant_id                   = var.tenant_id
-  sku_name                    = "standard"
-  enable_rbac_authorization   = true
+  name                       = var.key_vault_name
+  location                   = var.location
+  resource_group_name        = var.resource_group_name
+  tenant_id                  = var.tenant_id
+  sku_name                   = "standard"
+  enable_rbac_authorization  = false
 }
 
 resource "azurerm_role_assignment" "kv_secrets_user" {
   scope                = azurerm_key_vault.kv.id
   role_definition_name = "Key Vault Secrets User"
   principal_id         = var.principal_id
+}
+```
+
+Sources:
+- https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-migration
+- https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide
+
+---
+
+# Infrastructure as Code: Terraform step 2
+
+After role assignments are applied, enable RBAC on the vault.
+
+```hcl {*}{maxHeight:'300px'}
+resource "azurerm_key_vault" "kv" {
+  name                       = var.key_vault_name
+  location                   = var.location
+  resource_group_name        = var.resource_group_name
+  tenant_id                  = var.tenant_id
+  sku_name                   = "standard"
+  enable_rbac_authorization  = true
 }
 ```
 
@@ -448,20 +486,6 @@ Sources:
 
 ---
 
-# Demo script (15 minutes)
-
-1. Inspect current access policies.
-2. Assign equivalent RBAC roles.
-3. Flip permission model to RBAC.
-4. Validate app secret read.
-5. Show diagnostics and audit trail.
-
-Sources:
-- https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-migration
-- https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide
-
----
-
 # Executive summary
 
 - Key Vault remains foundational for secrets, keys, and certificates.
@@ -484,11 +508,4 @@ Sources:
 - Build a mapping table to built-in/custom RBAC roles.
 - Run one Bicep or Terraform pilot migration in dev.
 
-Primary source hub:
-- https://learn.microsoft.com/en-us/azure/key-vault/general/overview
-
-Additional references:
-- https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-access-policy
-- https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-migration
-- https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide
-- https://learn.microsoft.com/en-us/azure/key-vault/general/soft-delete-overview
+<QRCode value="https://learn.microsoft.com/en-us/azure/key-vault/general/overview" bottomAdjust="0px" />
