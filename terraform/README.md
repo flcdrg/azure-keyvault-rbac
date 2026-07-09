@@ -9,6 +9,7 @@ State is stored in HCP Terraform Cloud, matching the pattern used in the sibling
 - One `azurerm_key_vault` resource
 - One deployer access policy for the currently authenticated principal
 - Optional additional access policies for extra object IDs
+- Equivalent RBAC role assignments for deployer and optional additional principals
 
 ## HCP Terraform backend
 
@@ -47,4 +48,5 @@ terraform apply -var="resource_group_name=rg-your-existing-group"
 ## Notes
 
 - `enable_rbac_authorization = false` is intentionally set so Key Vault uses access policies initially.
-- You can later migrate to RBAC by changing this flag and replacing access policy resources.
+- RBAC role assignments are created now to mirror access policy intent and simplify migration.
+- You can later migrate to RBAC by changing this flag and removing access policy resources.

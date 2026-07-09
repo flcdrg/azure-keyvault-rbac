@@ -53,3 +53,11 @@ resource keyvault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   }
   tags: tags
 }
+
+module keyvaultRoleAssignments 'keyvault-roleassignments.bicep' = {
+  params: {
+    keyVaultName: keyvault.name
+    deployerObjectId: deployer().objectId
+    additionalPrincipalObjectId: '39655ba2-10df-4265-80a7-8b32f7c50e7b'
+  }
+}

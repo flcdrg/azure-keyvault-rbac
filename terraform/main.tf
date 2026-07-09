@@ -84,15 +84,15 @@ locals {
 
 resource "azurerm_key_vault" "this" {
 
-  name                           = local.key_vault_name
-  location                       = data.azurerm_resource_group.rg.location
-  resource_group_name            = data.azurerm_resource_group.rg.name
-  tenant_id                      = data.azurerm_client_config.current.tenant_id
-  sku_name                       = var.key_vault_sku_name
-  rbac_authorization_enabled     = false
-  soft_delete_retention_days     = 7
-  purge_protection_enabled       = false
-  public_network_access_enabled  = true
+  name                          = local.key_vault_name
+  location                      = data.azurerm_resource_group.rg.location
+  resource_group_name           = data.azurerm_resource_group.rg.name
+  tenant_id                     = data.azurerm_client_config.current.tenant_id
+  sku_name                      = var.key_vault_sku_name
+  rbac_authorization_enabled    = false
+  soft_delete_retention_days    = 7
+  purge_protection_enabled      = false
+  public_network_access_enabled = true
 
   tags = {
     environment = var.environment
@@ -124,4 +124,30 @@ resource "azurerm_key_vault_access_policy" "additional" {
   key_permissions         = local.full_key_permissions
   certificate_permissions = local.full_certificate_permissions
   storage_permissions     = local.full_storage_permissions
+}
+
+resource "azurerm_role_assignment" "deployer_secrets_officer" {
+  scope                = azurerm_key_vault.this.id
+  role_definition_name = "Key Vault Secrets Officer"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_role_assignment" "deployer_crypto_officer" {
+  scope                = azurerm_key_vault.this.id
+  role_definition_name = "Key Vault Crypto Officer"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_role_assignment" "deployer_certificates_officer" {
+  scope                = azurerm_key_vault.this.id
+  role_definition_name = "Key Vault Certificates Officer"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_role_assignment" "additional_administrator" {
+  for_each = toset(var.additional_access_policy_object_ids)
+
+  scope                = azurerm_key_vault.this.id
+  role_definition_name = "Key Vault Administrator"
+  principal_id         = each.value
 }
