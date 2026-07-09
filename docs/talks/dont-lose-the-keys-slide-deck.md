@@ -67,6 +67,14 @@ Source:
 
 # What is Azure Key Vault
 
+<div style="position:absolute; right:18px; top:90px; width:170px;">
+  <img src="https://images.unsplash.com/photo-1609770231080-e321deccc34c?q=80&w=320&auto=format&fit=crop" alt="Skeleton key" style="border-radius:8px;" />
+  <p style="font-size:11px; line-height:1.2; margin-top:6px;">
+    Photo by <a href="https://unsplash.com/@amoltyagi2">Amol Tyagi</a>
+    on <a href="https://unsplash.com/photos/silver-skeleton-key-on-black-surface-0juktkOTkpU">Unsplash</a>
+  </p>
+</div>
+
 Azure Key Vault is a managed service for:
 
 - Secrets management (tokens, passwords, API keys)
@@ -124,6 +132,14 @@ Sources:
 
 # Access models: RBAC vs access policies
 
+<div style="position:absolute; right:18px; top:100px; width:170px;">
+  <img src="https://images.unsplash.com/photo-1614064641938-3bbee52942c7?q=80&w=320&auto=format&fit=crop" alt="Padlock on keyboard" style="border-radius:8px;" />
+  <p style="font-size:11px; line-height:1.2; margin-top:6px;">
+    Photo by <a href="https://unsplash.com/@flyd2069">FlyD</a>
+    on <a href="https://unsplash.com/photos/red-padlock-on-black-computer-keyboard-mT7lXZPjk7U">Unsplash</a>
+  </p>
+</div>
+
 Azure RBAC:
 
 - Centralized Azure authorization model.
@@ -143,6 +159,14 @@ Sources:
 
 # Can you keep access policies?
 
+<div style="position:absolute; right:18px; bottom:24px; width:170px;">
+  <img src="https://images.unsplash.com/photo-1654944932733-bca31b703dd7?q=80&w=320&auto=format&fit=crop" alt="Key in door lock" style="border-radius:8px;" />
+  <p style="font-size:11px; line-height:1.2; margin-top:6px;">
+    Photo by <a href="https://unsplash.com/@raphaelgb">Raphael GB</a>
+    on <a href="https://unsplash.com/photos/a-key-on-a-door-dofnXBVZ51c">Unsplash</a>
+  </p>
+</div>
+
 Short answer: yes, existing vaults can continue using access policies.
 
 Strategic answer: migrate to RBAC because:
@@ -158,6 +182,14 @@ Sources:
 ---
 
 # Risk if you switch without planning
+
+<div style="position:absolute; right:18px; top:100px; width:170px;">
+  <img src="https://images.unsplash.com/photo-1510511459019-5dda7724fd87?q=80&w=320&auto=format&fit=crop" alt="Security code on laptop" style="border-radius:8px;" />
+  <p style="font-size:11px; line-height:1.2; margin-top:6px;">
+    Photo by <a href="https://unsplash.com/@markusspiske">Markus Spiske</a>
+    on <a href="https://unsplash.com/photos/black-and-gray-laptop-computer-turned-on-FXFz-sW0uwo">Unsplash</a>
+  </p>
+</div>
 
 Important migration warning:
 
@@ -433,6 +465,14 @@ Source:
 
 # Monitoring and diagnostics
 
+<div style="position:absolute; right:18px; top:95px; width:170px;">
+  <img src="https://images.unsplash.com/photo-1690627931320-16ac56eb2588?q=80&w=320&auto=format&fit=crop" alt="Cloud computing illustration" style="border-radius:8px;" />
+  <p style="font-size:11px; line-height:1.2; margin-top:6px;">
+    Photo by <a href="https://unsplash.com/@hazelz">Hazel Z</a>
+    on <a href="https://unsplash.com/photos/a-computer-screen-with-a-cloud-shaped-object-on-top-of-it-FocSgUZ10JM">Unsplash</a>
+  </p>
+</div>
+
 After migration, configure diagnostics and monitor access issues.
 
 Common destination options:
@@ -448,6 +488,14 @@ Source:
 ---
 
 # Soft-delete and purge protection in operations
+
+<div style="position:absolute; right:18px; top:95px; width:170px;">
+  <img src="https://images.unsplash.com/photo-1666960390180-e669a3f79336?q=80&w=320&auto=format&fit=crop" alt="Gold key on black silk" style="border-radius:8px;" />
+  <p style="font-size:11px; line-height:1.2; margin-top:6px;">
+    Photo by <a href="https://unsplash.com/@sarahspcreates">Sarah Penney</a>
+    on <a href="https://unsplash.com/photos/a-gold-key-on-a-black-surface-5dVg9ae7hKk">Unsplash</a>
+  </p>
+</div>
 
 Operational facts:
 
