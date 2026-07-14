@@ -58,7 +58,6 @@ By the end of this session, you should be able to:
 - Compare access policies and Azure RBAC.
 - Map common access-policy templates to RBAC roles.
 - Execute migration through Portal, Bicep, and Terraform.
-- Apply PIM and governance for ongoing control.
 
 Source:
 - https://learn.microsoft.com/en-us/azure/key-vault/general/overview
@@ -101,6 +100,12 @@ Sources:
 
 ---
 
+# Demo
+
+Azure Key Vaults
+
+---
+
 # Standard vs Premium tiers
 
 Standard tier:
@@ -114,6 +119,12 @@ Premium tier:
 
 Source:
 - https://learn.microsoft.com/en-us/azure/key-vault/general/overview
+- https://learn.microsoft.com/en-us/azure/security/fundamentals/key-management
+- https://csrc.nist.gov/pubs/fips/140-3/final
+
+<!--
+ FIPS 140-3 Security Requirements for Cryptographic Modules
+ -->
 
 ---
 
@@ -229,7 +240,6 @@ Common built-in roles include:
 - Key Vault Secrets Officer / Secrets User
 - Key Vault Crypto Officer / Crypto User
 - Key Vault Certificates Officer / Certificate User
-- Key Vault Purge Operator
 
 Source:
 - https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide
@@ -262,6 +272,7 @@ Some templates can require custom roles, for example:
 
 Source:
 - https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-migration
+- https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/security#key-vault-administrator
 
 ---
 
@@ -305,7 +316,7 @@ Recommended sequence:
 1. Prepare permissions and inventory identities.
 2. Document current access policies.
 3. Create equivalent RBAC assignments.
-4. Enable RBAC model on the vault.
+4. Enable RBAC mode on the vault.
 5. Validate workload access.
 6. Monitor and alert for issues.
 
@@ -403,6 +414,10 @@ Sources:
 
 ---
 
+# Demo: Bicep
+
+---
+
 # Infrastructure as Code: Terraform step 1
 
 Create role assignments first at Key Vault scope.
@@ -448,6 +463,10 @@ resource "azurerm_key_vault" "kv" {
 Sources:
 - https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-migration
 - https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide
+
+---
+
+# Demo: Terraform
 
 ---
 
@@ -507,6 +526,12 @@ Sources:
 - https://learn.microsoft.com/en-us/azure/key-vault/general/soft-delete-overview
 - https://learn.microsoft.com/en-us/azure/key-vault/general/overview
 
+<!--
+Soft delete is designed to prevent accidental deletion of your key vault and keys, secrets, and certificates stored inside key vault. Think of soft-delete like a recycle bin.
+
+Purge protection is designed to prevent the deletion of your key vault, keys, secrets, and certificates by a malicious insider. Think of it as a recycle bin with a time based lock.
+-->
+
 ---
 
 # Recovery caveat many teams miss
@@ -518,19 +543,6 @@ When a soft-deleted vault is recovered:
 
 Source:
 - https://learn.microsoft.com/en-us/azure/key-vault/general/soft-delete-overview
-
----
-
-# Suggested rollout model
-
-- Pilot in non-production first.
-- Migrate one vault per application boundary.
-- Keep break-glass process documented.
-- Add policy guardrails for new vaults.
-
-Sources:
-- https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-migration
-- https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-access-policy
 
 ---
 
@@ -556,4 +568,4 @@ Sources:
 - Build a mapping table to built-in/custom RBAC roles.
 - Run one Bicep or Terraform pilot migration in dev.
 
-<QRCode value="https://learn.microsoft.com/en-us/azure/key-vault/general/overview" bottomAdjust="0px" />
+<QRCode value="https://github.com/flcdrg/azure-keyvault-rbac" bottomAdjust="0px"  />

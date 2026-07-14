@@ -3,6 +3,8 @@
 This repository is a practical reference for teams migrating Azure Key Vault data-plane
 authorization from legacy access policies to Azure role-based access control (RBAC).
 
+See <https://learn.microsoft.com/en-us/azure/key-vault/general/overview> for official documentation on Azure Key Vault, and <https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-migration> for details on migrating from access policies to RBAC.
+
 It combines:
 
 - Infrastructure as code examples in Bicep and Terraform
@@ -29,8 +31,7 @@ This repo shows a safe migration sequence:
 - [infra](infra): Bicep templates and modules for Key Vault and RBAC migration patterns
 - [terraform](terraform): Terraform implementation of the same migration concepts
 - [app.cs](app.cs): file-based C# script that repeatedly reads secrets from two vaults
-- [docs/talks](docs/talks): Slidev deck for the talk
-	Don’t lose the keys to your Azure Key Vaults
+- [docs/talks](docs/talks): Slidev deck for the talk "Don’t lose the keys to your Azure Key Vaults"
 - [docs/AZURE_SETUP.md](docs/AZURE_SETUP.md): environment and identity setup guidance
 
 ## High-level architecture
@@ -60,4 +61,3 @@ This repo shows a safe migration sequence:
 - Examples are designed for learning and migration rehearsal.
 - Always validate role scopes and principal IDs before production rollout.
 - Expect short propagation delays after RBAC role assignment changes.
-
