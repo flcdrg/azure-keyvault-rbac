@@ -15,7 +15,7 @@ resource keyvault 'Microsoft.KeyVault/vaults@2024-11-01' = {
     tenantId: subscription().tenantId
 
     // Enable RBAC authorization for the Key Vault
-    enableRbacAuthorization: false
+    enableRbacAuthorization: true
 
     accessPolicies: [
       {
